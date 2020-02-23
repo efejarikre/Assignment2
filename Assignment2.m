@@ -424,12 +424,12 @@ for num = 1:num
     % sigma's as provided in the assignment instructions
     conductivity_outside = 1;
     conductivity_inside = 1e-2;
-    conduction = conductivity_outside.*ones(length_y,width_x);
+    conductivity = conductivity_outside.*ones(length_y,width_x);
    
     for i = 1:width_x
         for j = 1:length_y
             if((i <= 0.8*width_x && i >= (0.3*width_x) && j <= (0.3*length_y)) || (i <= (0.8*width_x) && i >= (0.3*width_x) && j >= (0.8*length_y)))
-                conduction(j,i) = conductivity_inside;
+                conductivity(j,i) = conductivity_inside;
             end
         end
     end
@@ -451,25 +451,25 @@ for num = 1:num
                 G_matrix(n,n) = 1;
             elseif(j == 1)
                
-                G_matrix(n,n) = -(((conduction(j,i) + conduction(j,i-1))/2)+((conduction(j,i) + conduction(j,i+1))/2)+((conduction(j,i) + conduction(j+1,i))/2));
-                G_matrix(n,nxm) = (conduction(j,i) + conduction(j,i-1))/2;
-                G_matrix(n,nxp) = (conduction(j,i) + conduction(j,i+1))/2;
-                G_matrix(n,nyp) = (conduction(j,i) + conduction(j+1,i))/2;
+                G_matrix(n,n) = -(((conductivity(j,i) + conductivity(j,i-1))/2)+((conductivity(j,i) + conductivity(j,i+1))/2)+((conductivity(j,i) + conductivity(j+1,i))/2));
+                G_matrix(n,nxm) = (conductivity(j,i) + conductivity(j,i-1))/2;
+                G_matrix(n,nxp) = (conductivity(j,i) + conductivity(j,i+1))/2;
+                G_matrix(n,nyp) = (conductivity(j,i) + conductivity(j+1,i))/2;
                
                 solution1(n,1) = 0;
             elseif(j == length_y)
-                G_matrix(n,n) = -(((conduction(j,i) + conduction(j,i-1))/2)+((conduction(j,i) + conduction(j,i+1))/2)+((conduction(j,i) + conduction(j-1,i))/2));
-                G_matrix(n,nxm) = (conduction(j,i) + conduction(j,i-1))/2;
-                G_matrix(n,nxp) = (conduction(j,i) + conduction(j,i+1))/2;
-                G_matrix(n,nym) = (conduction(j,i) + conduction(j-1,i))/2;
+                G_matrix(n,n) = -(((conductivity(j,i) + conductivity(j,i-1))/2)+((conductivity(j,i) + conductivity(j,i+1))/2)+((conductivity(j,i) + conductivity(j-1,i))/2));
+                G_matrix(n,nxm) = (conductivity(j,i) + conductivity(j,i-1))/2;
+                G_matrix(n,nxp) = (conductivity(j,i) + conductivity(j,i+1))/2;
+                G_matrix(n,nym) = (conductivity(j,i) + conductivity(j-1,i))/2;
                
                 solution1(n,1) = 0;
             else
-                G_matrix(n,n) = -(((conduction(j,i) + conduction(j,i-1))/2)+((conduction(j,i) + conduction(j,i+1))/2)+((conduction(j,i) + conduction(j-1,i))/2)+((conduction(j,i) + conduction(j+1,i))/2));
-                G_matrix(n,nxm) = (conduction(j,i) + conduction(j,i-1))/2;
-                G_matrix(n,nxp) = (conduction(j,i) + conduction(j,i+1))/2;
-                G_matrix(n,nym) = (conduction(j,i) + conduction(j-1,i))/2;
-                G_matrix(n,nyp) = (conduction(j,i) + conduction(j+1,i))/2;
+                G_matrix(n,n) = -(((conductivity(j,i) + conductivity(j,i-1))/2)+((conductivity(j,i) + conductivity(j,i+1))/2)+((conductivity(j,i) + conductivity(j-1,i))/2)+((conductivity(j,i) + conductivity(j+1,i))/2));
+                G_matrix(n,nxm) = (conductivity(j,i) + conductivity(j,i-1))/2;
+                G_matrix(n,nxp) = (conductivity(j,i) + conductivity(j,i+1))/2;
+                G_matrix(n,nym) = (conductivity(j,i) + conductivity(j-1,i))/2;
+                G_matrix(n,nyp) = (conductivity(j,i) + conductivity(j+1,i))/2;
                 solution1(n,1) = 0;
             end
         end
@@ -485,8 +485,8 @@ for num = 1:num
     end
    
     [Efield_x,Efield_y] = gradient(surface);
-    J_xdir = conduction.*(-Efield_x);
-    J_ydir = conduction.*(-Efield_y);
+    J_xdir = conductivity.*(-Efield_x);
+    J_ydir = conductivity.*(-Efield_y);
     current_density(num) = mean(mean((((J_xdir.^2)+(J_ydir.^2)).^0.5)));
 end
 
@@ -506,12 +506,12 @@ for num = 1:num
     solution1 = zeros(length_y*width_x,1);
     conductivity_outside = 1;
     conductivity_inside = 0.01;
-    conduction = conductivity_outside.*ones(length_y,width_x);
+    conductivity = conductivity_outside.*ones(length_y,width_x);
 
     for i = 1:width_x
         for j = 1:length_y
             if((i <= 0.8*width_x && i >= 0.3*width_x && j <= 0.01*num*length_y) || (i <= (1-num*0.01)*length_y && i >= 0.25*width_x && j >= (1-num*0.01)*length_y))
-                conduction(j,i) = conductivity_inside;
+                conductivity(j,i) = conductivity_inside;
             end
         end
     end
@@ -530,25 +530,25 @@ for num = 1:num
                 solution1(n,1) = 0;
                 G_matrix(n,n) = 1;
             elseif(j == 1)
-                G_matrix(n,n) = -(((conduction(j,i) + conduction(j,i-1))/2)+((conduction(j,i) + conduction(j,i+1))/2)+((conduction(j,i) + conduction(j+1,i))/2));
-                G_matrix(n,nxm) = (conduction(j,i) + conduction(j,i-1))/2;
-                G_matrix(n,nxp) = (conduction(j,i) + conduction(j,i+1))/2;
-                G_matrix(n,nyp) = (conduction(j,i) + conduction(j+1,i))/2;
+                G_matrix(n,n) = -(((conductivity(j,i) + conductivity(j,i-1))/2)+((conductivity(j,i) + conductivity(j,i+1))/2)+((conductivity(j,i) + conductivity(j+1,i))/2));
+                G_matrix(n,nxm) = (conductivity(j,i) + conductivity(j,i-1))/2;
+                G_matrix(n,nxp) = (conductivity(j,i) + conductivity(j,i+1))/2;
+                G_matrix(n,nyp) = (conductivity(j,i) + conductivity(j+1,i))/2;
                
                 solution1(n,1) = 0;
             elseif(j == length_y)
-                G_matrix(n,n) = -(((conduction(j,i) + conduction(j,i-1))/2)+((conduction(j,i) + conduction(j,i+1))/2)+((conduction(j,i) + conduction(j-1,i))/2));
-                G_matrix(n,nxm) = (conduction(j,i) + conduction(j,i-1))/2;
-                G_matrix(n,nxp) = (conduction(j,i) + conduction(j,i+1))/2;
-                G_matrix(n,nym) = (conduction(j,i) + conduction(j-1,i))/2;
+                G_matrix(n,n) = -(((conductivity(j,i) + conductivity(j,i-1))/2)+((conductivity(j,i) + conductivity(j,i+1))/2)+((conductivity(j,i) + conductivity(j-1,i))/2));
+                G_matrix(n,nxm) = (conductivity(j,i) + conductivity(j,i-1))/2;
+                G_matrix(n,nxp) = (conductivity(j,i) + conductivity(j,i+1))/2;
+                G_matrix(n,nym) = (conductivity(j,i) + conductivity(j-1,i))/2;
                
                 solution1(n,1) = 0;
             else
-                G_matrix(n,n) = -(((conduction(j,i) + conduction(j,i-1))/2)+((conduction(j,i) + conduction(j,i+1))/2)+((conduction(j,i) + conduction(j-1,i))/2)+((conduction(j,i) + conduction(j+1,i))/2));
-                G_matrix(n,nxm) = ((conduction(j,i) + conduction(j,i-1))/2);
-                G_matrix(n,nxp) = (conduction(j,i) + conduction(j,i+1))/2;
-                G_matrix(n,nym) = (conduction(j,i) + conduction(j-1,i))/2;
-                G_matrix(n,nyp) = (conduction(j,i) + conduction(j+1,i))/2;
+                G_matrix(n,n) = -(((conductivity(j,i) + conductivity(j,i-1))/2)+((conductivity(j,i) + conductivity(j,i+1))/2)+((conductivity(j,i) + conductivity(j-1,i))/2)+((conductivity(j,i) + conductivity(j+1,i))/2));
+                G_matrix(n,nxm) = ((conductivity(j,i) + conductivity(j,i-1))/2);
+                G_matrix(n,nxp) = (conductivity(j,i) + conductivity(j,i+1))/2;
+                G_matrix(n,nym) = (conductivity(j,i) + conductivity(j-1,i))/2;
+                G_matrix(n,nyp) = (conductivity(j,i) + conductivity(j+1,i))/2;
                 solution1(n,1) = 0;
             end
         end
@@ -570,8 +570,8 @@ for num = 1:num
     end
    
     [Efield_x,Efield_y] = gradient(surface);
-    J_xdir = conduction.*(-Efield_x);
-    J_ydir = conduction.*(-Efield_y);
+    J_xdir = conductivity.*(-Efield_x);
+    J_ydir = conductivity.*(-Efield_y);
     current_density(num) = mean(mean((((J_xdir.^2)+(J_ydir.^2)).^0.5)));
 end
 
@@ -593,12 +593,12 @@ for num = 1:num
     solution1 = zeros(length_y*width_x,1);
     conductivity_outside = 1;
     conductivity_inside = 1.02-num*0.02;
-    conduction = conductivity_outside.*ones(length_y,width_x);
+    conductivity = conductivity_outside.*ones(length_y,width_x);
    
     for i = 1:width_x
         for j = 1:length_y
             if((i <= 0.8*width_x && i >= 0.3*width_x && j <= 0.3*length_y) || (i <= 0.8*width_x && i >= 0.3*width_x && j >= 0.8*length_y))
-                conduction(j,i) = conductivity_inside;
+                conductivity(j,i) = conductivity_inside;
             end
         end
     end
@@ -619,27 +619,27 @@ for num = 1:num
                 G_matrix(n,n) = 1;
             elseif(j == 1)
                
-                G_matrix(n,n) = -(((conduction(j,i) + conduction(j,i-1))/2)+((conduction(j,i) + conduction(j,i+1))/2)+((conduction(j,i) + conduction(j+1,i))/2));
-                G_matrix(n,nxm) = (conduction(j,i) + conduction(j,i-1))/2;
-                G_matrix(n,nxp) = (conduction(j,i) + conduction(j,i+1))/2;
-                G_matrix(n,nyp) = (conduction(j,i) + conduction(j+1,i))/2;
+                G_matrix(n,n) = -(((conductivity(j,i) + conductivity(j,i-1))/2)+((conductivity(j,i) + conductivity(j,i+1))/2)+((conductivity(j,i) + conductivity(j+1,i))/2));
+                G_matrix(n,nxm) = (conductivity(j,i) + conductivity(j,i-1))/2;
+                G_matrix(n,nxp) = (conductivity(j,i) + conductivity(j,i+1))/2;
+                G_matrix(n,nyp) = (conductivity(j,i) + conductivity(j+1,i))/2;
                
                 solution1(n,1) = 0;
             elseif(j == length_y)
                
-                G_matrix(n,n) = -(((conduction(j,i) + conduction(j,i-1))/2)+((conduction(j,i) + conduction(j,i+1))/2)+((conduction(j,i) + conduction(j-1,i))/2));
-                G_matrix(n,nxm) = (conduction(j,i) + conduction(j,i-1))/2;
-                G_matrix(n,nxp) = (conduction(j,i) + conduction(j,i+1))/2;
-                G_matrix(n,nym) = (conduction(j,i) + conduction(j-1,i))/2;
+                G_matrix(n,n) = -(((conductivity(j,i) + conductivity(j,i-1))/2)+((conductivity(j,i) + conductivity(j,i+1))/2)+((conductivity(j,i) + conductivity(j-1,i))/2));
+                G_matrix(n,nxm) = (conductivity(j,i) + conductivity(j,i-1))/2;
+                G_matrix(n,nxp) = (conductivity(j,i) + conductivity(j,i+1))/2;
+                G_matrix(n,nym) = (conductivity(j,i) + conductivity(j-1,i))/2;
                
                 solution1(n,1) = 0;
             else  
                
-                G_matrix(n,n) = -(((conduction(j,i) + conduction(j,i-1))/2)+((conduction(j,i) + conduction(j,i+1))/2)+((conduction(j,i) + conduction(j-1,i))/2)+((conduction(j,i) + conduction(j+1,i))/2));
-                G_matrix(n,nxm) = (conduction(j,i) + conduction(j,i-1))/2;
-                G_matrix(n,nxp) = (conduction(j,i) + conduction(j,i+1))/2;
-                G_matrix(n,nym) = (conduction(j,i) + conduction(j-1,i))/2;
-                G_matrix(n,nyp) = (conduction(j,i) + conduction(j+1,i))/2;
+                G_matrix(n,n) = -(((conductivity(j,i) + conductivity(j,i-1))/2)+((conductivity(j,i) + conductivity(j,i+1))/2)+((conductivity(j,i) + conductivity(j-1,i))/2)+((conductivity(j,i) + conductivity(j+1,i))/2));
+                G_matrix(n,nxm) = (conductivity(j,i) + conductivity(j,i-1))/2;
+                G_matrix(n,nxp) = (conductivity(j,i) + conductivity(j,i+1))/2;
+                G_matrix(n,nym) = (conductivity(j,i) + conductivity(j-1,i))/2;
+                G_matrix(n,nyp) = (conductivity(j,i) + conductivity(j+1,i))/2;
                 solution1(n,1) = 0;
                
             end
@@ -660,8 +660,8 @@ for num = 1:num
     end
    
     [Efield_x,Efield_y] = gradient(surface);
-    J_xdir = conduction.*(-Efield_x);
-    J_ydir = conduction.*(-Efield_y);
+    J_xdir = conductivity.*(-Efield_x);
+    J_ydir = conductivity.*(-Efield_y);
     current_density(num) = mean(mean((((J_xdir.^2)+(J_ydir.^2)).^0.5)));
 end
 
